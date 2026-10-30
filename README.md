@@ -71,3 +71,9 @@ markers change to the two above. What the block shows is chosen in inlinr.
   your choices in Settings → README.
 - *no inlinr section*: the two marker lines are missing from the file.
 - *could not reach inlinr.com*: nothing was changed; the next run tries again.
+
+## Releasing
+
+Change `VERSION` (X.Y.Z) in a pull request. Its merge to main tags `vX.Y.Z`,
+publishes the GitHub Release and moves the major tag (`v1`) to it, which is
+what workflows using `inlinrhq/readme-stats@v1` run.
