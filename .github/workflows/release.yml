@@ -1,0 +1,36 @@
+name: release
+# A merge to main that sets VERSION to a version with no tag yet publishes
+# it: the tag vX.Y.Z, its GitHub Release, and the major tag vX moved to it,
+# which is what `uses: inlinrhq/readme-stats@v1` reads.
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Tag and release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="$(tr -d '[:space:]' < VERSION)"
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "VERSION must be X.Y.Z, got '$version'" >&2
+            exit 1
+          fi
+          tag="v$version"
+          major="v${version%%.*}"
+          if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
+            echo "$tag already exists, nothing to release"
+            exit 0
+          fi
+          git tag "$tag" "$GITHUB_SHA"
+          git tag -f "$major" "$GITHUB_SHA"
+          git push origin "$tag"
+          git push -f origin "$major"
+          gh release create "$tag" --title "$tag" --generate-notes --latest
