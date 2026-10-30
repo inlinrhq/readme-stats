@@ -1,0 +1,51 @@
+name: inlinr README stats
+description: Your inlinr coding stats in your profile README, refreshed every day. No secret, no token, options set in inlinr.
+author: inlinr
+branding:
+  icon: clock
+  color: green
+
+inputs:
+  handle:
+    description: Your GitHub handle, as on inlinr. Defaults to the repository's owner.
+    default: ${{ github.repository_owner }}
+  path:
+    description: The file holding the markers.
+    default: README.md
+  commit-message:
+    description: The message of the commit, when the stats changed.
+    default: Update coding stats
+  checkout:
+    description: Check the repository out first. Set to false when an earlier step already did.
+    default: "true"
+  commit:
+    description: Commit and push the change. Set to false to leave it to a later step.
+    default: "true"
+
+outputs:
+  changed:
+    description: '"true" when the file changed.'
+    value: ${{ steps.update.outputs.changed }}
+
+runs:
+  using: composite
+  steps:
+    - if: inputs.checkout == 'true'
+      uses: actions/checkout@v4
+    - id: update
+      shell: bash
+      env:
+        INLINR_HANDLE: ${{ inputs.handle }}
+        INLINR_PATH: ${{ inputs.path }}
+      run: python3 "$GITHUB_ACTION_PATH/update.py"
+    - if: inputs.commit == 'true' && steps.update.outputs.changed == 'true'
+      shell: bash
+      env:
+        INLINR_PATH: ${{ inputs.path }}
+        INLINR_MESSAGE: ${{ inputs.commit-message }}
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add -- "$INLINR_PATH"
+        git commit -m "$INLINR_MESSAGE"
+        git push
