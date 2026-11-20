@@ -1,11 +1,19 @@
 name: test
 on:
   pull_request:
-  push:
-    branches: [main]
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: python3 -m unittest discover -s tests -v
+
+      # No credit to an AI assistant in the commits, the branch or this
+      # pull request's body (7IBO/socle, code/git.md): .githooks/commit-msg.
+      - name: No attribution
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          COMMITS: ${{ github.event.pull_request.commits }}
+          BRANCH: ${{ github.head_ref }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: sh .githooks/commit-msg --ci
