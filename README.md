@@ -14,6 +14,9 @@ languages, editors, your days. Text, a card, or both.
   project.
 - **One commit only when the figures change.** No "last updated" date.
 
+The card on its own, light or dark, with no workflow: [README card on inlinr.com](https://inlinr.com/tools/readme-card).
+The three ways to put coding stats in a README, compared: [coding stats in your GitHub README](https://inlinr.com/guides/github-readme-coding-stats).
+
 ## Use it
 
 1. In the README of your profile repository (`<you>/<you>`), put these two
@@ -64,6 +67,8 @@ Replace the step that uses `anmol098/waka-readme-stats` (or
 `athul/waka-readme`) with `uses: inlinrhq/readme-stats@v1`, and delete the
 `WAKATIME_API_KEY` and `GH_TOKEN` secrets: nothing replaces them. Your
 markers change to the two above. What the block shows is chosen in inlinr.
+To bring your WakaTime history with you:
+[switching from WakaTime](https://inlinr.com/guides/switch-from-wakatime).
 
 ## When it fails
 
